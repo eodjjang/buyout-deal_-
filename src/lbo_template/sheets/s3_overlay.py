@@ -50,6 +50,12 @@ ROWS = [
     ("UFCF (Stressed)", "={c}11-{c}18-{c}13-{c}15"),
 ]
 
+FIRST_DATA_ROW = 5
+# Row index of the last overlay line (UFCF); used by 5_CF_Waterfall and downstream sheets.
+UFCF_ROW = FIRST_DATA_ROW + len(ROWS) - 1
+# "Stressed EBITDA" is index 6 in ROWS → row 11 (not Capex row 13).
+STRESSED_EBITDA_ROW = FIRST_DATA_ROW + 6
+
 FORECAST_COLS = {"E", "F", "G", "H", "I"}
 
 
