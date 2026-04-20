@@ -1,0 +1,28 @@
+[project]
+name = "lbo-template"
+version = "0.5.0"
+description = "Lender-perspective LBO Stress Template (Excel builder)"
+requires-python = ">=3.11"
+dependencies = [
+    "openpyxl>=3.1.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+]
+
+[project.scripts]
+build-lbo-template = "lbo_template.build:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
