@@ -1,7 +1,7 @@
 """Tests for 9a / 9b / 9c CIQ raw sheets and (later) 9_Peer_Summary."""
 from __future__ import annotations
 
-from lbo_template.layout import SHEET_9A, SHEET_9B, SHEET_9C
+from lbo_template.layout import SHEET_9A, SHEET_9B, SHEET_9C, SHEET_PEER
 
 
 def test_9a_fixed_headers(wb):
@@ -80,3 +80,23 @@ def test_9c_auto_reliability_lookup(wb):
     ws = wb[SHEET_9C]
     q3 = ws["Q3"].value
     assert "XLOOKUP" in q3 or "VLOOKUP" in q3
+
+
+def test_peer_summary_has_trading_and_transaction(wb):
+    ws = wb[SHEET_PEER]
+    col_a = [ws.cell(row=r, column=1).value for r in range(1, 60)]
+    assert any("Trading Peer Summary" in (v or "") for v in col_a)
+    assert any("Transaction Comps Summary" in (v or "") for v in col_a)
+
+
+def test_applied_multiples_named_ranges(wb):
+    assert "Applied_Trading_Multiple" in wb.defined_names
+    assert "Applied_Trading_PBR" in wb.defined_names
+    assert "Applied_Transaction_Multiple" in wb.defined_names
+
+
+def test_three_year_average_of_average(wb):
+    """설계 요구사항 7: 3개년 평균의 평균"""
+    ws = wb[SHEET_PEER]
+    col_a = [ws.cell(row=r, column=1).value for r in range(1, 60)]
+    assert any("3개년 평균의 평균" in (v or "") for v in col_a)
