@@ -15,7 +15,10 @@ def build_workbook() -> Workbook:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        prog="build-lbo-template",
+        description="Assemble the Lender-perspective LBO Stress Template workbook.",
+    )
     parser.add_argument("--output", type=Path, default=Path("dist/LBO_Stress_Template_v0.5.xlsx"))
     args = parser.parse_args()
     wb = build_workbook()

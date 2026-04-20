@@ -6,7 +6,7 @@ Plan: `.cursor/plans/20260420-lender-lbo-stress-template-plan.md`
 ## Build
 
 ```bash
-python -m pip install -e .[dev]
+python -m pip install -e ".[dev]"
 python -m lbo_template.build --output dist/LBO_Stress_Template_v0.5.xlsx
 ```
 
