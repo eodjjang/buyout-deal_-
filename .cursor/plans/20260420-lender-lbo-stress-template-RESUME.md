@@ -2,7 +2,7 @@
 
 > 이 문서는 `subagent-driven-development` 스킬로 `20260420-lender-lbo-stress-template-plan.md`를 실행하던 세션이 컨텍스트 한계로 중단될 때, **새 채팅 세션이 그대로 이어서 진행**하기 위한 상태 스냅샷입니다.
 
-**마지막 갱신**: 2026-04-21 Task 18 완료 (README v0.5 + annotated tag `v0.5.0`; commit `f969309`; spec ✅ + code ✅ APPROVED)
+**마지막 갱신**: 2026-04-21 Final 전체 code-reviewer 완료 (`6db3d2b..f969309` 샘플링 리뷰; **Ready to merge: Yes**; Important: `define_name` 미통일·순환 그래프 CI 한계·DCF TV `5.0` 매직; Minor: `_write_headers` A–Z 한정)
 
 ---
 
@@ -297,6 +297,14 @@ pytest tests/ -v  →  71 passed
 - **Spec reviewer**: ✅ APPROVED
 - **Code reviewer**: ✅ APPROVED (Minor: `goldentest_v05.json` 명명 혼동 가능 — 선택적 설명 한 줄, 미반영)
 
+### Final: 전체 code-reviewer (`6db3d2b..f969309`)
+
+- **판정**: **Ready to merge: Yes** (Critical 0건)
+- **범위**: ~36 files / ~2905 +; `build.py` 오케스트레이션·`layout` SSOT·시트별 모듈·71 tests·`test_integrity`·대시보드–오버레이 행 계약 샘플 검증
+- **Important (비차단)**: (1) 일부 시트가 여전히 `DefinedName` 직접 할당 — `define_name`로 점진 통일 권장 (2) 순환참조는 CI에서 완전 증명 불가 — README에 Excel 비재계산 명시 또는 v0.6 골든 보완 (3) DCF TV 지수 `5.0` 상수화·기간 연동 문서화
+- **Minor**: `s8_dashboard` 헤더 열 인덱스가 A–Z 가정
+- 서브에이전트 참조: `929d5a00-b7ff-4873-a33b-17a7433f029a` (새 세션 resume 불가이므로 기록용)
+
 ---
 
 ## 4. 진행 중단된 Task
@@ -305,19 +313,18 @@ pytest tests/ -v  →  71 passed
 
 ---
 
-## 5. 다음 액션 — Final: 전체 코드 리뷰 + 브랜치 마감
+## 5. 다음 액션 — `finishing-a-development-branch` (병합·정리)
 
 ### 개요
 
-- 플랜 **Self-Review** 및 `subagent-driven-development` 종료 흐름: 워크트리 `feat/lbo-template-v0.5` 전체 변경에 대해 **`Task(code-reviewer)`** 한 번 (베이스 `main`/`6db3d2b` 공통 조상 또는 브랜치 분기점 대비 `git merge-base`로 범위 확정).
-- 이후 **`finishing-a-development-branch`** 스킬: PR/머지/워크트리 정리 옵션 선택.
-- **선택**: 수기 Excel(Task 17 Step 3) 미실행이면 README 절차대로 1회 수행.
+- 워크트리 `feat/lbo-template-v0.5`는 Final code-reviewer **머지 승인** 상태. **`superpowers:finishing-a-development-branch`** 스킬로 PR 생성, `main` 머지, 로컬 워크트리 제거/보존 등 옵션을 선택한다.
+- **선택**: Task 17 Step 3 수기 Excel을 아직 안 했다면 README 10단계 1회.
+- **후속 (리뷰 권고, 비차단)**: `define_name` 전면 통일, README에 “CI는 Excel 재계산 미실행” 한 줄, v0.6 골든 스냅샷, DCF 기간·TV 상수 정리.
 
-### Final code-reviewer 힌트
+### 힌트
 
-- **HEAD**: `f969309`, **tag**: `v0.5.0`.
-- 프롬프트에 워크트리 경로·플랜 Success Criteria·71 tests 통과 명시.
-- 메인 저장소는 RESUME·규칙만; 병합은 사용자 정책에 따름.
+- 머지 베이스: `git merge-base HEAD main` = `6db3d2b` (플랜 추가 커밋).
+- 태그 `v0.5.0`은 이미 워크트리 HEAD에 있음 — 원격 푸시 시 `git push origin v0.5.0` 병행 여부는 팀 정책에 따름.
 
 ---
 
@@ -341,8 +348,8 @@ pytest tests/ -v  →  71 passed
 | W4 | T16 8_Dashboard | ✅ | 선행 `b3d176c` (`define_name` 헬퍼) + `76bd740` + polish `7d54ec5` — 5 tables, 64 DASH_* 등록, spec ✅ + code ⚠️→✅ APPROVED (sign convention 통일 + 3 contract tests) |
 | W5 | T17 Integrity | ✅ | `fc83825` + `b45e058` — `test_integrity.py` 7 tests; DASH regex 스칼라 허용; spec ✅ code ✅ |
 | W5 | T18 README + tag | ✅ | `f969309` + `v0.5.0`; spec ✅ code ✅ |
-| Final | **전체 code-reviewer** | **⏳ 다음** | `Task(code-reviewer)` — 범위는 `feat/lbo-template-v0.5` 전체 |
-| Final | finishing-a-development-branch | ⏳ | 병합/PR 스킬 |
+| Final | 전체 code-reviewer | ✅ | `6db3d2b..f969309` — Ready to merge **Yes**; 서브 `929d5a00-…` |
+| Final | **finishing-a-development-branch** | **⏳ 다음** | PR/머지/워크트리 정리 |
 
 ---
 
@@ -376,7 +383,7 @@ python -m pytest tests/ -v                       # 71 passed
 기대 출력 요약:
 - HEAD = `f969309 docs: v0.5 README with verification steps and v0.6 roadmap`
 - pytest: `71 passed`
-- §5 Final — 전체 `code-reviewer` 디스패치 후 `finishing-a-development-branch`
+- §5 — `finishing-a-development-branch`로 브랜치 마감 (Final code-review 완료)
 
 ---
 
@@ -401,5 +408,6 @@ python -m pytest tests/ -v                       # 71 passed
   - Task 16 implementer (impl + polish 분리): `02de52f6-1335-47ad-ad66-defbc874692e` / polish `95ee8d88-5458-4648-a245-8bb116ad0e5a`
   - Task 16 spec reviewer: `d8f90488-8e8a-4a15-9679-fe96b83ada4a`
   - Task 16 code reviewer (라운드 1 → 2): `30dd90da-3624-4928-9858-bf6b3e104f2d` / `5878ff36-a538-4c21-92e9-9780b2cf1f9a`
+  - Final holistic code-reviewer (`6db3d2b..f969309`): `929d5a00-b7ff-4873-a33b-17a7433f029a`
 
 **새 세션은 일반적으로 resume 불가**. 위 ID는 참고·감사용이며, 실제로는 §5의 새 프롬프트로 fresh subagent를 디스패치.
