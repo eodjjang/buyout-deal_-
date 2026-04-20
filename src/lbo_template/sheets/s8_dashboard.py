@@ -9,6 +9,10 @@ from lbo_template.layout import SHEET_DASH, SHEET_OVERLAY
 from lbo_template import conventions as c
 from lbo_template.sheets.s3_overlay import STRESSED_EBITDA_ROW, STRESSED_CAPEX_ROW
 
+# Sign convention: every row stores the CF with its natural sign (inflows +,
+# outflows -). 투자CF (row 3), 이자비용 (row 6), and 원금상환 (row 7) are
+# therefore stored negative so 기말현금 (row 8) = SUM(rows 1–7) without
+# mixed-sign bookkeeping.
 CFTABLE_ROW_LABELS = [
     "기초현금",
     "영업CF (EBITDA)",
@@ -74,7 +78,7 @@ def build(wb: Workbook) -> Worksheet:
         ws[f"D{r}"] = f"=DASH_Valuation_Method{i}_EV"
         ws[f"E{r}"] = f"=DASH_LTV_Method{i}_Opco"
         ws[f"F{r}"] = f"=DASH_LTV_Method{i}_Cumulative"
-        for col in "BCDEF":
+        for col in "CDEF":
             c.apply_key_output(ws[f"{col}{r}"])
         ws[f"C{r}"].number_format = c.NUM_FMT_MULTIPLE
         ws[f"D{r}"].number_format = c.NUM_FMT_ACCOUNTING
@@ -166,28 +170,20 @@ def build(wb: Workbook) -> Worksheet:
                 cell.value = f"=INDEX(Dividend_Row,{fy_idx})"
             elif row_idx == 5:  # 재무CF (기존 차입금 — MVP는 0)
                 cell.value = 0
-            elif row_idx == 6:  # 본건 이자비용 합계 (Sr + 2L + Holdco)
+            elif row_idx == 6:  # 본건 이자비용 합계 (Sr + 2L + Holdco) — stored negative
                 cell.value = (
-                    f"=INDEX(Opco_Sr_Interest,{fy_idx})"
+                    f"=-(INDEX(Opco_Sr_Interest,{fy_idx})"
                     f"+INDEX(Opco_2L_Interest,{fy_idx})"
-                    f"+INDEX(Holdco_Interest,{fy_idx})"
+                    f"+INDEX(Holdco_Interest,{fy_idx}))"
                 )
-            elif row_idx == 7:  # 본건 원금상환 (Mandatory only)
+            elif row_idx == 7:  # 본건 원금상환 (Mandatory only) — stored negative
                 cell.value = (
-                    f"=INDEX(Opco_Sr_Mand,{fy_idx})"
-                    f"+INDEX(Opco_2L_Mand,{fy_idx})"
+                    f"=-(INDEX(Opco_Sr_Mand,{fy_idx})"
+                    f"+INDEX(Opco_2L_Mand,{fy_idx}))"
                 )
-            elif row_idx == 8:  # 기말현금 = 기초 + 영업 + 투자 + 배당 + 재무 - 이자 - 원금
-                cell.value = (
-                    f"={col}{CFTABLE_FIRST_ROW}"
-                    f"+{col}{CFTABLE_FIRST_ROW + 1}"
-                    f"+{col}{CFTABLE_FIRST_ROW + 2}"
-                    f"+{col}{CFTABLE_FIRST_ROW + 3}"
-                    f"+{col}{CFTABLE_FIRST_ROW + 4}"
-                    f"-{col}{CFTABLE_FIRST_ROW + 5}"
-                    f"-{col}{CFTABLE_FIRST_ROW + 6}"
-                )
-            if cell.value is not None:
+            elif row_idx == 8:  # 기말현금 = SUM(rows 1–7) thanks to uniform sign convention
+                cell.value = f"=SUM({col}{CFTABLE_FIRST_ROW}:{col}{CFTABLE_LAST_ROW - 1})"
+            if row_idx != 1:
                 c.apply_key_output(cell)
                 cell.number_format = c.NUM_FMT_ACCOUNTING
             c.define_name(
@@ -225,7 +221,6 @@ def build(wb: Workbook) -> Worksheet:
 
     # Sponsor IRR placeholder — name reserved per design v0.5, populated in v1.1+.
     ws["A44"] = "Sponsor IRR (v1.1+)"
-    ws["B44"] = None
     c.define_name(wb, "DASH_IRR_Sponsor", f"'{SHEET_DASH}'!$B$44")
 
     return ws
