@@ -29,7 +29,7 @@ def build(wb: Workbook) -> Worksheet:
     c.apply_section_header(ws["A1"])
     ws.merge_cells("A1:K1")
 
-    # --- Method Declaration Block (rows 3..7) ---
+    # --- Method Declaration Block (header row 3, data rows 4..6) ---
     decl_headers = ["방식", "Label", "Method Type", "Multiple", "Multiple 기반", "Source 메모"]
     for idx, h in enumerate(decl_headers):
         col = chr(ord("A") + idx)
@@ -99,7 +99,7 @@ def build(wb: Workbook) -> Worksheet:
         # Source memo F
         c.apply_input(ws[f"F{r}"])
 
-    # --- 9-Column LTV Table (rows 9..14) ---
+    # --- 9-Column LTV Table (title row 9, header row 10, data rows 11..13) ---
     ws["A9"] = "9-열 LTV 산출"
     ws["A9"].font = Font(bold=True, size=11)
 

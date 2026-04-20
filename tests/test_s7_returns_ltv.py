@@ -40,3 +40,20 @@ def test_method_type_switch_formula(wb):
                 found_switch = True
                 break
     assert found_switch
+
+
+def test_ltv_anchors_and_target_ownership(wb):
+    ws = wb[SHEET_RETURNS]
+    assert ws["D27"].value == "=LTM_EBITDA"
+    assert ws["B28"].value == 1.0
+    assert "Target_Ownership" in wb.defined_names
+
+
+def test_ltv_row_formulas_wire_correctly(wb):
+    ws = wb[SHEET_RETURNS]
+    assert ws["E11"].value == "=Target_Ownership"
+    assert ws["F11"].value == "=D11*E11"
+    assert ws["G11"].value == "=Opco_Senior_Principal+Opco_2L_Principal"
+    assert ws["H11"].value.startswith("=IFERROR(G11/F11")
+    assert ws["I11"].value == "=Holdco_Sub_Principal"
+    assert ws["J11"].value.startswith("=IFERROR((G11+I11)/F11")
