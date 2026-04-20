@@ -55,6 +55,9 @@ FIRST_DATA_ROW = 5
 UFCF_ROW = FIRST_DATA_ROW + len(ROWS) - 1
 # "Stressed EBITDA" is index 6 in ROWS → row 11 (not Capex row 13).
 STRESSED_EBITDA_ROW = FIRST_DATA_ROW + 6
+STRESSED_CAPEX_ROW = FIRST_DATA_ROW + 8  # "Stressed Capex"
+STRESSED_NWC_ROW = FIRST_DATA_ROW + 10  # "Stressed ΔNWC"
+OVERLAY_CASH_TAXES_ROW = FIRST_DATA_ROW + 13  # "Cash Taxes" (MAX(0,EBIT)*rate)
 
 FORECAST_COLS = {"E", "F", "G", "H", "I"}
 
