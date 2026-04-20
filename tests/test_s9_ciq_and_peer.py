@@ -1,7 +1,7 @@
 """Tests for 9a / 9b / 9c CIQ raw sheets and (later) 9_Peer_Summary."""
 from __future__ import annotations
 
-from lbo_template.layout import SHEET_9A, SHEET_9B
+from lbo_template.layout import SHEET_9A, SHEET_9B, SHEET_9C
 
 
 def test_9a_fixed_headers(wb):
@@ -64,3 +64,19 @@ def test_9b_headers(wb):
     for i, h in enumerate(expected_first_6):
         col = chr(ord("A") + i)
         assert ws[f"{col}2"].value == h
+
+
+def test_9c_source_dropdown(wb):
+    ws = wb[SHEET_9C]
+    dvs = ws.data_validations.dataValidation
+    found = False
+    for dv in dvs:
+        if "Kisvalue" in (dv.formula1 or "") and "한경Compass" in (dv.formula1 or ""):
+            found = True
+    assert found, "Source column must have dropdown with Kisvalue, 한경Compass, etc."
+
+
+def test_9c_auto_reliability_lookup(wb):
+    ws = wb[SHEET_9C]
+    q3 = ws["Q3"].value
+    assert "XLOOKUP" in q3 or "VLOOKUP" in q3
