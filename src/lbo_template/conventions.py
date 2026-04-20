@@ -1,6 +1,8 @@
 """Style, color, font, and number-format conventions (design doc §0)."""
 from __future__ import annotations
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+from openpyxl.workbook import Workbook
+from openpyxl.workbook.defined_name import DefinedName
 
 COLOR_SECTION_HEADER_FILL = "1F4E79"
 COLOR_COLUMN_HEADER_FILL = "D9E1F2"
@@ -101,3 +103,14 @@ def apply_key_output(cell) -> None:
 def apply_ciq(cell) -> None:
     cell.font = ciq_formula_font()
     cell.border = thin_border()
+
+
+def define_name(wb: Workbook, name: str, ref: str) -> None:
+    """Register a workbook-scoped named range.
+
+    `ref` must be a fully-qualified Excel reference like ``"'SheetName'!$B$3"``
+    (absolute, with sheet quoted). Centralizing this avoids repeating the
+    three-line ``wb.defined_names[n] = DefinedName(n, attr_text=r)`` pattern
+    across every sheet builder.
+    """
+    wb.defined_names[name] = DefinedName(name, attr_text=ref)

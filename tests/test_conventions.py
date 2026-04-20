@@ -31,3 +31,12 @@ def test_style_factories_return_correct_types():
 def test_fy_axis_columns():
     assert c.FY_AXIS_COLUMNS == ["B", "C", "D", "E", "F", "G", "H", "I"]
     assert c.FY_AXIS_LABELS == ["FY-2", "FY-1", "LTM", "FY1", "FY2", "FY3", "FY4", "FY5"]
+
+
+def test_define_name_registers_workbook_scoped_name():
+    from openpyxl import Workbook
+
+    wb = Workbook()
+    c.define_name(wb, "My_Anchor", "'Sheet'!$B$3")
+    assert "My_Anchor" in wb.defined_names
+    assert wb.defined_names["My_Anchor"].attr_text == "'Sheet'!$B$3"

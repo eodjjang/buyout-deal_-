@@ -2,7 +2,6 @@
 from openpyxl.workbook import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.worksheet.datavalidation import DataValidation
-from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.styles import Font
 from lbo_template.layout import SHEET_RETURNS
 from lbo_template import conventions as c
@@ -72,14 +71,8 @@ def build(wb: Workbook) -> Worksheet:
         )
         c.apply_calc(mul)
         mul.number_format = c.NUM_FMT_MULTIPLE
-        wb.defined_names[f"DASH_Valuation_Method{idx+1}_Label"] = DefinedName(
-            f"DASH_Valuation_Method{idx+1}_Label",
-            attr_text=f"'{SHEET_RETURNS}'!$B${r}",
-        )
-        wb.defined_names[f"DASH_Valuation_Method{idx+1}_Multiple"] = DefinedName(
-            f"DASH_Valuation_Method{idx+1}_Multiple",
-            attr_text=f"'{SHEET_RETURNS}'!$D${r}",
-        )
+        c.define_name(wb, f"DASH_Valuation_Method{idx+1}_Label", f"'{SHEET_RETURNS}'!$B${r}")
+        c.define_name(wb, f"DASH_Valuation_Method{idx+1}_Multiple", f"'{SHEET_RETURNS}'!$D${r}")
 
         # Base metric col E (Book Value / EBITDA / MarketCap)
         base = ws[f"E{r}"]
@@ -124,9 +117,7 @@ def build(wb: Workbook) -> Worksheet:
     ws["B28"] = 1.0
     c.apply_input(ws["B28"])
     ws["B28"].number_format = c.NUM_FMT_PERCENT
-    wb.defined_names["Target_Ownership"] = DefinedName(
-        "Target_Ownership", attr_text=f"'{SHEET_RETURNS}'!$B$28"
-    )
+    c.define_name(wb, "Target_Ownership", f"'{SHEET_RETURNS}'!$B$28")
 
     for idx in range(3):
         r = 11 + idx
@@ -163,17 +154,8 @@ def build(wb: Workbook) -> Worksheet:
         c.apply_key_output(ws[f"J{r}"])
         ws[f"J{r}"].number_format = c.NUM_FMT_PERCENT
 
-        wb.defined_names[f"DASH_Valuation_Method{idx+1}_EV"] = DefinedName(
-            f"DASH_Valuation_Method{idx+1}_EV",
-            attr_text=f"'{SHEET_RETURNS}'!$D${r}",
-        )
-        wb.defined_names[f"DASH_LTV_Method{idx+1}_Opco"] = DefinedName(
-            f"DASH_LTV_Method{idx+1}_Opco",
-            attr_text=f"'{SHEET_RETURNS}'!$H${r}",
-        )
-        wb.defined_names[f"DASH_LTV_Method{idx+1}_Cumulative"] = DefinedName(
-            f"DASH_LTV_Method{idx+1}_Cumulative",
-            attr_text=f"'{SHEET_RETURNS}'!$J${r}",
-        )
+        c.define_name(wb, f"DASH_Valuation_Method{idx+1}_EV", f"'{SHEET_RETURNS}'!$D${r}")
+        c.define_name(wb, f"DASH_LTV_Method{idx+1}_Opco", f"'{SHEET_RETURNS}'!$H${r}")
+        c.define_name(wb, f"DASH_LTV_Method{idx+1}_Cumulative", f"'{SHEET_RETURNS}'!$J${r}")
 
     return ws
