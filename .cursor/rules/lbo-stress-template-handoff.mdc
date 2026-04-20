@@ -1,0 +1,25 @@
+---
+description: LBO Stress Template 플랜 실행 재개 — RESUME 기반 핸드오프 (Task 14까지)
+globs:
+  - .cursor/plans/20260420-lender-lbo-stress-template-plan.md
+  - .cursor/plans/20260420-lender-lbo-stress-template-RESUME.md
+alwaysApply: false
+---
+
+# LBO Stress Template — 세션 핸드오프
+
+이 규칙은 위 glob에 해당하는 플랜·RESUME 파일이 열리거나 `@`로 참조될 때 적용된다.
+
+## 새 채팅(새 창)에서 이어하기
+
+1. **먼저** `.cursor/plans/20260420-lender-lbo-stress-template-RESUME.md` 전체를 읽는다.
+2. **§5 "다음 액션"**부터 `subagent-driven-development` 스킬로 구현을 이어간다.
+3. 구현 위치는 RESUME §1의 워크트리 경로(`buyout-deal-lbo-impl`)이며, 플랜·RESUME 본문 수정은 메인 워크스페이스에서만 한다(RESUME에 적힌 대로).
+
+## 모델·Task 범위
+
+- 사용자 지시가 없으면 **Task 14 (`9_Peer_Summary`)까지** 구현 서브태스크에는 **`composer-2`** 모델을 우선 사용한다.
+
+## Task 종료 시 (컨트롤러 의무)
+
+각 Task가 완료되면 RESUME §「자동 저장 / 핸드오프 프로토콜」체크리스트에 따라 **같은 턴에서** RESUME을 갱신한다. 사용자가 새 창에서 `@RESUME`만 해도 상태가 맞춰져 있어야 한다.
