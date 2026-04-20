@@ -128,14 +128,6 @@ pytest tests/ -v  →  71 passed
 
 ## 3. 완료 Task
 
-### ✅ Task 17: Integrity + 전체 smoke (automated)
-
-- Commits: `fc83825` (impl) + `b45e058` (polish — code reviewer Important: `test_no_iterative_calc_marker` docstring 현실화, `test_sources_equals_uses_check_formula_exists`에 `str` 가드 + 첫 매칭 후 `break`)
-- `tests/test_integrity.py`: 플랜 7개 테스트 + DASH 정규식은 스칼라 `DASH_Case` 등 허용하도록 플랜 스니펫 대비 완화(주석 설명)
-- **Spec reviewer**: ✅ APPROVED (플랜 발췌 “7 Active_*”는 실제 6개 `Active_*` + `Perm_Growth`와 정합)
-- **Code reviewer**: ⚠️ With fixes → polish 후 ✅ APPROVED
-- **Step 3 수기 Excel 검증**: RESUME §5대로 컨트롤러/사용자 — `python -m lbo_template.build --output dist/LBO_Stress_Template_v0.5.xlsx` 후 플랜 10단계
-
 ### ✅ Task 1: 프로젝트 부트스트랩
 - Commits: `459ef8b` + polish `c6a36d7`
 - 8 files, 2 tests passing
@@ -288,6 +280,14 @@ pytest tests/ -v  →  71 passed
 - **Deferred Nits (후속 Task에서 검토)**:
   - **#7 — 표 2/3/5 row anchor 상수**: `TABLE2_START = 13`, `TABLE3_START = 22`, `TABLE5_START = 38` 호이스트. 현재 file churn 예상 낮아 reviewer 권고상 defer. Task 17 Integrity 또는 최종 리팩토 라운드에서 검토.
   - **M2 — T15의 s7 행 상수 호이스트** (`METHOD_DECL_START`, `LTV_DATA_START`, `LTM_ANCHOR_ROW`, `TARGET_OWN_ROW`): Task 17 Integrity와 함께 검토.
+
+### ✅ Task 17: Integrity + 전체 smoke (automated)
+
+- Commits: `fc83825` (impl) + `b45e058` (polish — code reviewer Important: `test_no_iterative_calc_marker` docstring 현실화, `test_sources_equals_uses_check_formula_exists`에 `str` 가드 + 첫 매칭 후 `break`)
+- `tests/test_integrity.py`: 플랜 7개 테스트 + DASH 정규식은 스칼라 `DASH_Case` 등 허용하도록 플랜 스니펫 대비 완화(주석 설명)
+- **Spec reviewer**: ✅ APPROVED (플랜 발췌 “7 Active_*”는 실제 6개 `Active_*` + `Perm_Growth`와 정합)
+- **Code reviewer**: ⚠️ With fixes → polish 후 ✅ APPROVED
+- **Step 3 수기 Excel 검증**: RESUME §5대로 컨트롤러/사용자 — `python -m lbo_template.build --output dist/LBO_Stress_Template_v0.5.xlsx` 후 플랜 10단계
 
 ---
 
