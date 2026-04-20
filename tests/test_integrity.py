@@ -11,7 +11,10 @@ def test_all_sheets_exist(wb):
 
 
 def test_no_iterative_calc_marker(wb):
-    """어떤 셀도 iterative calc를 가정한 수식을 쓰지 않아야 함"""
+    """Heuristic: no formula text may embed this sheet's same-cell address (e.g. '…'!A1).
+
+    openpyxl does not compute dependency graphs; this does not prove zero circular refs in Excel.
+    """
     for ws in wb.worksheets:
         for row in ws.iter_rows():
             for cell in row:
@@ -58,10 +61,12 @@ def test_sources_equals_uses_check_formula_exists(wb):
     found = False
     for r in range(1, 30):
         label = ws.cell(row=r, column=1).value
-        if label and "Sources − Uses" in label:
+        if label and "Sources − Uses" in str(label):
             formula = ws.cell(row=r, column=2).value
+            assert isinstance(formula, str), f"row {r}: expected str formula, got {type(formula).__name__}"
             assert formula.startswith("=")
             found = True
+            break
     assert found
 
 
