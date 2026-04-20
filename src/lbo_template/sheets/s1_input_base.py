@@ -10,7 +10,7 @@ from openpyxl.formatting.rule import CellIsRule
 from lbo_template.layout import SHEET_INPUT
 from lbo_template import conventions as c
 
-_SECTION_TITLE_FONT = Font(bold=True, size=11)
+_SECTION_TITLE_FONT = Font(name="Calibri", bold=True, size=11)
 _RED_FILL = PatternFill("solid", fgColor="FFC7CE")
 
 SECTION_A_ROWS = [

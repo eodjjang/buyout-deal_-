@@ -50,7 +50,7 @@ def test_section_b_ebitda_is_reported(wb):
 def test_section_c_implied_ratios(wb):
     ws = wb[SHEET_INPUT]
     assert ws["A38"].value == "Section C — Implied 역산 지표 (검증용)"
-    labels = [ws.cell(row=r, column=1).value for r in range(39, 48)]
+    labels = [ws.cell(row=r, column=1).value for r in range(40, 45)]
     assert "EBITDA Margin" in labels
     assert "Capex as % of Revenue" in labels
     assert "Revenue YoY Growth" in labels
@@ -62,3 +62,39 @@ def test_dual_check_rows(wb):
     labels = [ws.cell(row=r, column=1).value for r in range(5, 25)]
     assert any("Sources − Uses" in (v or "") for v in labels)
     assert any("Target Leverage Check" in (v or "") for v in labels)
+
+
+def test_check_formulas(wb):
+    """Dual check row formulas — locks the Sources−Uses display formula and
+    the Target Leverage check (downstream T8 Debt Schedule reads B19)."""
+    ws = wb[SHEET_INPUT]
+    assert ws["B18"].value == "=(B10+B11+B12+B13)-B9"
+    assert ws["B19"].value == '=IFERROR((B10+B11+B12)/D27,"")'
+
+
+def test_section_c_formula_shape(wb):
+    """Section C IFERROR templates — locks row references EBITDA=27, Revenue=24,
+    Capex=29, ΔNWC=30 used by Sections B and C contract."""
+    ws = wb[SHEET_INPUT]
+    # EBITDA Margin (row 40) — col F = FY2
+    assert ws["F40"].value == '=IFERROR(F27/F24, "")'
+    # Revenue YoY (row 43) — FY-2 (col B) intentionally blank
+    assert ws["B43"].value is None
+    assert ws["C43"].value == '=IFERROR(C24/B24-1, "")'
+
+
+def test_named_ranges(wb):
+    """Cross-sheet contract — Tasks 6-13 will reference these names."""
+    expected = {
+        "LTM_EBITDA": "'1_Input_BaseCase'!$D$27",
+        "Target_Leverage": "'1_Input_BaseCase'!$B$14",
+        "Closing_Date": "'1_Input_BaseCase'!$B$15",
+        "Exit_Date": "'1_Input_BaseCase'!$B$16",
+        "Opco_Senior_Principal": "'1_Input_BaseCase'!$B$10",
+        "Opco_2L_Principal": "'1_Input_BaseCase'!$B$11",
+        "Holdco_Sub_Principal": "'1_Input_BaseCase'!$B$12",
+    }
+    for name, attr in expected.items():
+        assert name in wb.defined_names, f"missing named range: {name}"
+        assert wb.defined_names[name].attr_text == attr, \
+            f"{name} attr_text mismatch: {wb.defined_names[name].attr_text!r} != {attr!r}"
