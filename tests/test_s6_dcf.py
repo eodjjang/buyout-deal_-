@@ -39,14 +39,21 @@ def test_mid_year_discount_periods(wb):
     raise AssertionError("Discount Period row missing")
 
 
-def test_tv_formula_uses_perm_growth_and_5_0(wb):
+def test_tv_and_pv_use_perm_growth_and_j11_exponent(wb):
     ws = wb[SHEET_DCF]
     for r in range(1, 25):
         if ws.cell(row=r, column=1).value == "Terminal Value (Gordon)":
-            tv = ws.cell(row=r, column=10).value
-            assert "Perm_Growth" in tv
+            assert "Perm_Growth" in ws.cell(row=r, column=10).value
+            break
+    else:
+        raise AssertionError("TV row missing")
+    for r in range(1, 25):
+        if ws.cell(row=r, column=1).value == "PV of TV":
+            pv = ws.cell(row=r, column=10).value
+            assert "J11" in pv and "^" in pv, f"expected PV(TV) to use ^J11, got {pv!r}"
+            assert "5.0" not in pv, "PV(TV) should not hardcode 5.0 exponent (use J11)"
             return
-    raise AssertionError("TV row missing")
+    raise AssertionError("PV of TV row missing")
 
 
 def test_wacc_uses_active_uplift(wb):

@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
-from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.styles import Font, PatternFill
 from openpyxl.formatting.rule import CellIsRule
 
@@ -141,27 +140,13 @@ def build(wb: Workbook) -> Worksheet:
 
     # Named ranges for downstream sheets. SHEET_INPUT starts with a digit,
     # so single-quoting the sheet name in attr_text is mandatory.
-    wb.defined_names["LTM_EBITDA"] = DefinedName(
-        "LTM_EBITDA", attr_text=f"'{SHEET_INPUT}'!$D$27"
-    )
-    wb.defined_names["Target_Leverage"] = DefinedName(
-        "Target_Leverage", attr_text=f"'{SHEET_INPUT}'!$B$14"
-    )
-    wb.defined_names["Closing_Date"] = DefinedName(
-        "Closing_Date", attr_text=f"'{SHEET_INPUT}'!$B$15"
-    )
-    wb.defined_names["Exit_Date"] = DefinedName(
-        "Exit_Date", attr_text=f"'{SHEET_INPUT}'!$B$16"
-    )
-    wb.defined_names["Opco_Senior_Principal"] = DefinedName(
-        "Opco_Senior_Principal", attr_text=f"'{SHEET_INPUT}'!$B$10"
-    )
-    wb.defined_names["Opco_2L_Principal"] = DefinedName(
-        "Opco_2L_Principal", attr_text=f"'{SHEET_INPUT}'!$B$11"
-    )
-    wb.defined_names["Holdco_Sub_Principal"] = DefinedName(
-        "Holdco_Sub_Principal", attr_text=f"'{SHEET_INPUT}'!$B$12"
-    )
+    c.define_name(wb, "LTM_EBITDA", f"'{SHEET_INPUT}'!$D$27")
+    c.define_name(wb, "Target_Leverage", f"'{SHEET_INPUT}'!$B$14")
+    c.define_name(wb, "Closing_Date", f"'{SHEET_INPUT}'!$B$15")
+    c.define_name(wb, "Exit_Date", f"'{SHEET_INPUT}'!$B$16")
+    c.define_name(wb, "Opco_Senior_Principal", f"'{SHEET_INPUT}'!$B$10")
+    c.define_name(wb, "Opco_2L_Principal", f"'{SHEET_INPUT}'!$B$11")
+    c.define_name(wb, "Holdco_Sub_Principal", f"'{SHEET_INPUT}'!$B$12")
 
     # Flag Target Leverage Check red when principal stack exceeds Target multiple
     ws.conditional_formatting.add(

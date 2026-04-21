@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
-from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.styles import Font, Alignment
 
@@ -48,9 +47,7 @@ def build(wb: Workbook) -> Worksheet:
     ws.add_data_validation(dv_case)
     dv_case.add(CASE_SWITCH_CELL)
 
-    wb.defined_names["Case_Switch"] = DefinedName(
-        "Case_Switch", attr_text=f"'{SHEET_STRESS}'!$B$3"
-    )
+    c.define_name(wb, "Case_Switch", f"'{SHEET_STRESS}'!$B$3")
 
     # --- Industry preset (reference dropdown) -----------------------------
     ws["A4"] = "업종 프리셋 (참고)"
@@ -111,8 +108,6 @@ def build(wb: Workbook) -> Worksheet:
         c.apply_key_output(f_cell)
         f_cell.number_format = num_fmt
 
-        wb.defined_names[active_name] = DefinedName(
-            active_name, attr_text=f"'{SHEET_STRESS}'!$F${r}"
-        )
+        c.define_name(wb, active_name, f"'{SHEET_STRESS}'!$F${r}")
 
     return ws

@@ -1,0 +1,14 @@
+{
+  "schema_version": "0.5-formula-snapshot",
+  "description": "Builder regression: selected cell values/formulas must match. CI does not run Excel; numeric outputs need manual steps or a filled golden .xlsx (README v0.6).",
+  "cells": {
+    "8_Dashboard!B3": "=Case_Switch",
+    "8_Dashboard!B4": "v0.5",
+    "8_Dashboard!B8": "=DASH_Valuation_Method1_Label",
+    "8_Dashboard!B15": "=INDEX(Dividend_Row,1)",
+    "6_DCF_Valuation!J11": 5.0,
+    "6_DCF_Valuation!J15": "=J14/(1+I10)^J11",
+    "6_DCF_Valuation!J14": "=I9*(1+Perm_Growth)/(I10-Perm_Growth)",
+    "2_Stress_Panel!F8": "=SWITCH(Case_Switch,\"Base\",B8,\"Upside\",C8,\"Downside\",D8)"
+  }
+}

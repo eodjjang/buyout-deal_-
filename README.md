@@ -15,6 +15,12 @@ python -m lbo_template.build --output dist/LBO_Stress_Template_v0.5.xlsx
 pytest -v
 ```
 
+### CI(파이썬)가 하지 않는 것
+
+- `pytest`는 openpyxl로 통합 워크북을 만들고 **수식·이름·구조**를 검증한다. **Microsoft Excel을 실행해 셀을 재계산하지 않는다.**
+- 따라서 **사후 수치·순환·에러 배너** 검증은 아래 **수기 검증**이 1차 방어선이다.
+- `tests/fixtures/goldentest_v05.json`은 대시보드·DCF·스트레스 등 **핵심 셀의 수식/스칼라 스냅샷**으로 빌더 회귀를 잡는다(엑셀 출력값 자체의 합의는 v0.6 로드맵).
+
 ## 수기 검증 (처음 한 번)
 
 먼저 위 빌드 명령으로 `dist/LBO_Stress_Template_v0.5.xlsx`를 만든 뒤, Excel에서 다음을 수행한다.
@@ -32,9 +38,9 @@ pytest -v
 
 ## v0.6 로드맵 (Golden Test Fixture)
 
-1. 과거 마감된 딜 1건으로 입력 셀 전부 채운 `.xlsx` 생성
-2. 그 파일의 `8_Dashboard` 출력값 스냅샷을 `tests/fixtures/goldentest_v05.json`에 기록
-3. 빌더 리그레션 시 스냅샷 불변 자동 검증
+1. 과거 마감된 딜 1건으로 입력 셀 전부 채운 `.xlsx` 생성 (Excel에서 저장)
+2. 그 파일의 `8_Dashboard` **재계산된 출력값**을 JSON 등으로 스냅샷 (현재 `goldentest_v05.json`은 **빌더 기준 수식** 회귀—출력값 합의와는 별개)
+3. (선택) CI에서 파일을 열 수 있는 환경이면 재계산 결과 자동 비교; 아니면 수동 스모크
 
 ## Design & Plan Docs
 

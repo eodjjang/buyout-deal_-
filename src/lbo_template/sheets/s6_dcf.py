@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from openpyxl import Workbook
-from openpyxl.workbook.defined_name import DefinedName
 
 from lbo_template.layout import SHEET_DCF, SHEET_INPUT, SHEET_OVERLAY
 from lbo_template import conventions as c
@@ -17,6 +16,9 @@ from lbo_template.sheets.s3_overlay import (
 DCF_COLS = ["E", "F", "G", "H", "I"]
 TV_COL = "J"
 PERIODS = {"E": 0.5, "F": 1.5, "G": 2.5, "H": 3.5, "I": 4.5}
+# Years from valuation to horizon (mid-year) at which Gordon TV is discounted to PV.
+# J11 holds this value and PV(TV) uses ^J11 so the exponent is not duplicated as a literal.
+GORDON_TV_DISCOUNT_EXPONENT = 5.0
 
 ROWS_FY: list[tuple[str, str | None]] = [
     ("Stressed EBITDA", "='{ov}'!{c}{ebitda_row}"),
@@ -33,7 +35,7 @@ ROWS_FY: list[tuple[str, str | None]] = [
 
 TV_ROWS = [
     ("Terminal Value (Gordon)", "=I9*(1+Perm_Growth)/(I10-Perm_Growth)"),
-    ("PV of TV", "=J14/(1+I10)^5.0"),
+    ("PV of TV", "=J14/(1+I10)^J11"),
 ]
 
 
@@ -86,7 +88,7 @@ def build(wb: Workbook) -> Worksheet:
                     c.apply_key_output(cell)
 
     j11 = ws[f"{TV_COL}11"]
-    j11.value = 5.0
+    j11.value = GORDON_TV_DISCOUNT_EXPONENT
     j11.number_format = "0.0"
     c.apply_calc(j11)
 
@@ -132,15 +134,8 @@ def build(wb: Workbook) -> Worksheet:
     b23.value = 0.10
     c.apply_input(b23)
     b23.number_format = c.NUM_FMT_PERCENT
-    wb.defined_names["Base_WACC"] = DefinedName(
-        "Base_WACC", attr_text=f"'{SHEET_DCF}'!$B$23"
-    )
-
-    wb.defined_names["DCF_EV"] = DefinedName(
-        "DCF_EV", attr_text=f"'{SHEET_DCF}'!$E$17"
-    )
-    wb.defined_names["DCF_Equity_Value"] = DefinedName(
-        "DCF_Equity_Value", attr_text=f"'{SHEET_DCF}'!$E$20"
-    )
+    c.define_name(wb, "Base_WACC", f"'{SHEET_DCF}'!$B$23")
+    c.define_name(wb, "DCF_EV", f"'{SHEET_DCF}'!$E$17")
+    c.define_name(wb, "DCF_Equity_Value", f"'{SHEET_DCF}'!$E$20")
 
     return ws

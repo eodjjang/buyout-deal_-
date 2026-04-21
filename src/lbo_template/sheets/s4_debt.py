@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
-from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.styles import Font, Alignment
 
@@ -118,9 +117,7 @@ def build(wb: Workbook) -> Worksheet:
     dv_pik = DataValidation(type="list", formula1='"Cash,PIK"', allow_blank=False)
     ws.add_data_validation(dv_pik)
     dv_pik.add("B35")
-    wb.defined_names["Holdco_PIK_Mode"] = DefinedName(
-        "Holdco_PIK_Mode", attr_text=f"'{SHEET_DEBT}'!$B$35"
-    )
+    c.define_name(wb, "Holdco_PIK_Mode", f"'{SHEET_DEBT}'!$B$35")
 
     ws["A37"] = "Cash Sweep % (Opco excess cash → Senior prepay)"
     ws["A37"].font = _SECTION_TITLE_FONT
@@ -129,24 +126,11 @@ def build(wb: Workbook) -> Worksheet:
     b37.value = 1.0
     c.apply_input(b37)
     b37.number_format = c.NUM_FMT_PERCENT
-    wb.defined_names["Sweep_Pct"] = DefinedName(
-        "Sweep_Pct", attr_text=f"'{SHEET_DEBT}'!$B$37"
-    )
-
-    wb.defined_names["Opco_Sr_Interest"] = DefinedName(
-        "Opco_Sr_Interest", attr_text=f"'{SHEET_DEBT}'!$E$8:$I$8"
-    )
-    wb.defined_names["Opco_2L_Interest"] = DefinedName(
-        "Opco_2L_Interest", attr_text=f"'{SHEET_DEBT}'!$E$18:$I$18"
-    )
-    wb.defined_names["Holdco_Interest"] = DefinedName(
-        "Holdco_Interest", attr_text=f"'{SHEET_DEBT}'!$E$28:$I$28"
-    )
-    wb.defined_names["Opco_Sr_Mand"] = DefinedName(
-        "Opco_Sr_Mand", attr_text=f"'{SHEET_DEBT}'!$E$9:$I$9"
-    )
-    wb.defined_names["Opco_2L_Mand"] = DefinedName(
-        "Opco_2L_Mand", attr_text=f"'{SHEET_DEBT}'!$E$19:$I$19"
-    )
+    c.define_name(wb, "Sweep_Pct", f"'{SHEET_DEBT}'!$B$37")
+    c.define_name(wb, "Opco_Sr_Interest", f"'{SHEET_DEBT}'!$E$8:$I$8")
+    c.define_name(wb, "Opco_2L_Interest", f"'{SHEET_DEBT}'!$E$18:$I$18")
+    c.define_name(wb, "Holdco_Interest", f"'{SHEET_DEBT}'!$E$28:$I$28")
+    c.define_name(wb, "Opco_Sr_Mand", f"'{SHEET_DEBT}'!$E$9:$I$9")
+    c.define_name(wb, "Opco_2L_Mand", f"'{SHEET_DEBT}'!$E$19:$I$19")
 
     return ws

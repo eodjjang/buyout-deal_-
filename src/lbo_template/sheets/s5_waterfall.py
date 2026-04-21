@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
-from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.formatting.rule import CellIsRule
 from openpyxl.styles import PatternFill
 
@@ -146,9 +145,7 @@ def build(wb: Workbook) -> Worksheet:
 
     for col in ["E", "F", "G", "H", "I"]:
         name = f"Opco_Sweep_Avail_{col}"
-        wb.defined_names[name] = DefinedName(
-            name, attr_text=f"'{SHEET_WATERFALL}'!${col}${SWEEP_ROW}"
-        )
+        c.define_name(wb, name, f"'{SHEET_WATERFALL}'!${col}${SWEEP_ROW}")
 
     for idx, (label, key) in enumerate(KPI_ROWS):
         r = KPI_START + idx
@@ -165,25 +162,27 @@ def build(wb: Workbook) -> Worksheet:
             else:
                 cell.number_format = c.NUM_FMT_ACCOUNTING
 
-    wb.defined_names["Opco_DSCR_Row"] = DefinedName(
+    c.define_name(
+        wb,
         "Opco_DSCR_Row",
-        attr_text=f"'{SHEET_WATERFALL}'!$E${KPI_START}:$I${KPI_START}",
+        f"'{SHEET_WATERFALL}'!$E${KPI_START}:$I${KPI_START}",
     )
-    wb.defined_names["Opco_ICR_Row"] = DefinedName(
+    c.define_name(
+        wb,
         "Opco_ICR_Row",
-        attr_text=f"'{SHEET_WATERFALL}'!$E${KPI_START + 1}:$I${KPI_START + 1}",
+        f"'{SHEET_WATERFALL}'!$E${KPI_START + 1}:$I${KPI_START + 1}",
     )
-    wb.defined_names["Holdco_ICR_Row"] = DefinedName(
+    c.define_name(
+        wb,
         "Holdco_ICR_Row",
-        attr_text=f"'{SHEET_WATERFALL}'!$E${KPI_START + 2}:$I${KPI_START + 2}",
+        f"'{SHEET_WATERFALL}'!$E${KPI_START + 2}:$I${KPI_START + 2}",
     )
-    wb.defined_names["Net_Leverage_Row"] = DefinedName(
+    c.define_name(
+        wb,
         "Net_Leverage_Row",
-        attr_text=f"'{SHEET_WATERFALL}'!$E${KPI_START + 3}:$I${KPI_START + 3}",
+        f"'{SHEET_WATERFALL}'!$E${KPI_START + 3}:$I${KPI_START + 3}",
     )
-    wb.defined_names["Dividend_Row"] = DefinedName(
-        "Dividend_Row", attr_text=f"'{SHEET_WATERFALL}'!$E$13:$I$13"
-    )
+    c.define_name(wb, "Dividend_Row", f"'{SHEET_WATERFALL}'!$E$13:$I$13")
 
     ws.conditional_formatting.add(
         f"E18:I18",

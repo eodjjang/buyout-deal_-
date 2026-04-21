@@ -3,7 +3,6 @@ from __future__ import annotations
 
 from openpyxl import Workbook
 from openpyxl.styles import Font
-from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.worksheet.worksheet import Worksheet
 
 from lbo_template import conventions as c
@@ -76,18 +75,12 @@ def build(wb: Workbook) -> Worksheet:
     ws["C27"] = "=(C22+D22+E22)/3"
     c.apply_key_output(ws["C27"])
     ws["C27"].number_format = c.NUM_FMT_MULTIPLE
-    wb.defined_names["Applied_Trading_Multiple"] = DefinedName(
-        "Applied_Trading_Multiple",
-        attr_text=f"'{SHEET_PEER}'!$C$27",
-    )
+    c.define_name(wb, "Applied_Trading_Multiple", f"'{SHEET_PEER}'!$C$27")
 
     ws["G27"] = '=IFERROR(AVERAGEIF($I$6:$I$20,TRUE,G$6:G$20),"")'
     c.apply_key_output(ws["G27"])
     ws["G27"].number_format = c.NUM_FMT_MULTIPLE
-    wb.defined_names["Applied_Trading_PBR"] = DefinedName(
-        "Applied_Trading_PBR",
-        attr_text=f"'{SHEET_PEER}'!$G$27",
-    )
+    c.define_name(wb, "Applied_Trading_PBR", f"'{SHEET_PEER}'!$G$27")
 
     # --- Transaction Comps Summary (rows 30..65) ---
     ws["A30"] = "Transaction Comps Summary"
@@ -155,9 +148,6 @@ def build(wb: Workbook) -> Worksheet:
     ws["F65"].number_format = c.NUM_FMT_MULTIPLE
     ws["F66"].number_format = c.NUM_FMT_MULTIPLE
     ws["F67"].number_format = c.NUM_FMT_MULTIPLE
-    wb.defined_names["Applied_Transaction_Multiple"] = DefinedName(
-        "Applied_Transaction_Multiple",
-        attr_text=f"'{SHEET_PEER}'!$F$67",
-    )
+    c.define_name(wb, "Applied_Transaction_Multiple", f"'{SHEET_PEER}'!$F$67")
 
     return ws
