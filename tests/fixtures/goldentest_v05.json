@@ -9,6 +9,6 @@
     "6_DCF_Valuation!J11": 5.0,
     "6_DCF_Valuation!J15": "=J14/(1+I10)^J11",
     "6_DCF_Valuation!J14": "=I9*(1+Perm_Growth)/(I10-Perm_Growth)",
-    "2_Stress_Panel!F8": "=SWITCH(Case_Switch,\"Base\",B8,\"Upside\",C8,\"Downside\",D8)"
+    "2_Stress_Panel!F8": "=IF(Case_Switch=\"Base\",B8,IF(Case_Switch=\"Upside\",C8,IF(Case_Switch=\"Downside\",D8,\"\")))"
   }
 }

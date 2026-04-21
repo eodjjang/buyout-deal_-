@@ -18,6 +18,43 @@ METHOD_TYPES = [
 ]
 
 
+def _if_chain_multiple(cr: str) -> str:
+    """Excel 2016 이전 호환 — SWITCH 대신 IF 중첩."""
+    return (
+        f'=IF({cr}="DCF_Stressed",IFERROR(DCF_EV/D27,"n.a"),'
+        f'IF({cr}="Trading_EV_EBITDA",Applied_Trading_Multiple,'
+        f'IF({cr}="Trading_PBR",Applied_Trading_PBR,'
+        f'IF({cr}="Trading_PER","(수기)",'
+        f'IF({cr}="Transaction_EV_EBITDA",Applied_Transaction_Multiple,'
+        f'IF({cr}="Transaction_PBR","(수기)",'
+        f'IF({cr}="MarketCap_Avg","n.a",'
+        f'IF({cr}="Manual_Absolute","n.a",""))))))))'
+    )
+
+
+def _if_chain_base_metric(cr: str) -> str:
+    return (
+        f'=IF({cr}="DCF_Stressed","EBITDA",'
+        f'IF({cr}="Trading_EV_EBITDA","EBITDA",'
+        f'IF({cr}="Trading_PBR","Book Value",'
+        f'IF({cr}="Trading_PER","Net Income",'
+        f'IF({cr}="Transaction_EV_EBITDA","EBITDA",'
+        f'IF({cr}="Transaction_PBR","Book Value",'
+        f'IF({cr}="MarketCap_Avg","절대값",'
+        f'IF({cr}="Manual_Absolute","절대값",""))))))))'
+    )
+
+
+def _if_chain_ltv_ev(method_r: int) -> str:
+    cr = f"C{method_r}"
+    return (
+        f'=IFERROR(IF({cr}="DCF_Stressed",DCF_Equity_Value,'
+        f'IF({cr}="MarketCap_Avg",F{method_r},'
+        f'IF({cr}="Manual_Absolute",F{method_r},'
+        f'D{method_r}*LTM_EBITDA))),"")'
+    )
+
+
 def build(wb: Workbook) -> Worksheet:
     ws = wb.create_sheet(SHEET_RETURNS)
     ws.column_dimensions["A"].width = 14
@@ -56,37 +93,16 @@ def build(wb: Workbook) -> Worksheet:
         c.apply_input(ws[f"C{r}"])
         dv_mt.add(f"C{r}")
 
-        # Multiple (col D) — SWITCH on Method Type
+        # Multiple (col D) — Method Type 분기 (SWITCH 대신 IF: 구버전 Excel 호환)
         mul = ws[f"D{r}"]
-        mul.value = (
-            f'=SWITCH(C{r},'
-            f'"DCF_Stressed",IFERROR(DCF_EV/D27,"n.a"),'
-            f'"Trading_EV_EBITDA",Applied_Trading_Multiple,'
-            f'"Trading_PBR",Applied_Trading_PBR,'
-            f'"Trading_PER","(수기)",'
-            f'"Transaction_EV_EBITDA",Applied_Transaction_Multiple,'
-            f'"Transaction_PBR","(수기)",'
-            f'"MarketCap_Avg","n.a",'
-            f'"Manual_Absolute","n.a")'
-        )
+        mul.value = _if_chain_multiple(f"C{r}")
         c.apply_calc(mul)
         mul.number_format = c.NUM_FMT_MULTIPLE
         c.define_name(wb, f"DASH_Valuation_Method{idx+1}_Label", f"'{SHEET_RETURNS}'!$B${r}")
         c.define_name(wb, f"DASH_Valuation_Method{idx+1}_Multiple", f"'{SHEET_RETURNS}'!$D${r}")
 
-        # Base metric col E (Book Value / EBITDA / MarketCap)
         base = ws[f"E{r}"]
-        base.value = (
-            f'=SWITCH(C{r},'
-            f'"DCF_Stressed","EBITDA",'
-            f'"Trading_EV_EBITDA","EBITDA",'
-            f'"Trading_PBR","Book Value",'
-            f'"Trading_PER","Net Income",'
-            f'"Transaction_EV_EBITDA","EBITDA",'
-            f'"Transaction_PBR","Book Value",'
-            f'"MarketCap_Avg","절대값",'
-            f'"Manual_Absolute","절대값")'
-        )
+        base.value = _if_chain_base_metric(f"C{r}")
         c.apply_calc(base)
 
         # Source memo F
@@ -129,13 +145,7 @@ def build(wb: Workbook) -> Worksheet:
         ws[f"C{r}"] = f"=D{method_r}"
         ws[f"C{r}"].font = c.sametab_link_font()
         # (c) 지분가치 100% — dispatched by Method Type
-        ws[f"D{r}"] = (
-            f'=IFERROR(SWITCH(C{method_r},'
-            f'"DCF_Stressed",DCF_Equity_Value,'
-            f'"MarketCap_Avg",F{method_r},'
-            f'"Manual_Absolute",F{method_r},'
-            f'D{method_r}*LTM_EBITDA),"")'
-        )
+        ws[f"D{r}"] = _if_chain_ltv_ev(method_r)
         c.apply_calc(ws[f"D{r}"])
         ws[f"D{r}"].number_format = c.NUM_FMT_ACCOUNTING
         ws[f"E{r}"] = "=Target_Ownership"

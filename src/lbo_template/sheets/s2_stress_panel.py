@@ -102,8 +102,11 @@ def build(wb: Workbook) -> Worksheet:
         c.apply_calc(unit_cell)
 
         f_cell = ws[f"F{r}"]
+        # SWITCH는 Excel 2019+/365 전용 → 구버전 #NAME? 방지: IF 중첩
         f_cell.value = (
-            f'=SWITCH(Case_Switch,"Base",B{r},"Upside",C{r},"Downside",D{r})'
+            f'=IF(Case_Switch="Base",B{r},'
+            f'IF(Case_Switch="Upside",C{r},'
+            f'IF(Case_Switch="Downside",D{r},"")))'
         )
         c.apply_key_output(f_cell)
         f_cell.number_format = num_fmt

@@ -30,16 +30,17 @@ def test_named_ranges_method_abstraction(wb):
         assert f"DASH_LTV_Method{i}_Cumulative" in wb.defined_names
 
 
-def test_method_type_switch_formula(wb):
+def test_method_type_branch_formula(wb):
+    """SWITCH 대신 IF 중첩 — 구버전 Excel 호환."""
     ws = wb[SHEET_RETURNS]
-    found_switch = False
+    found = False
     for r in range(5, 15):
         for col in "BCDEFGHI":
             v = ws[f"{col}{r}"].value
-            if isinstance(v, str) and "SWITCH" in v and "DCF_Stressed" in v:
-                found_switch = True
+            if isinstance(v, str) and "IF(" in v and "DCF_Stressed" in v:
+                found = True
                 break
-    assert found_switch
+    assert found
 
 
 def test_ltv_anchors_and_target_ownership(wb):

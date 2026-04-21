@@ -44,11 +44,11 @@ def test_default_values(wb):
     assert ws["D14"].value == 0.01
 
 
-def test_active_formula_uses_switch(wb):
+def test_active_formula_uses_case_branch(wb):
     ws = wb[SHEET_STRESS]
     f8 = ws["F8"].value
-    assert "SWITCH" in f8 or "CHOOSE" in f8 or "MATCH" in f8
     assert "Case_Switch" in f8
+    assert "IF(" in f8 and "Base" in f8 and "Upside" in f8 and "Downside" in f8
 
 
 def test_named_ranges_for_active_values(wb):
