@@ -15,6 +15,10 @@ python -m lbo_template.build --output dist/LBO_Stress_Template_v0.5.xlsx
 pytest -v
 ```
 
+### 표시 형식
+
+- 금액 셀은 **통화 기호 없이** `#,##0` 스타일(회계 음수 괄호)을 쓴다. (달러 `$` 미사용, KRW 백만원 단위 전제는 모델 설명 참고.)
+
 ### CI(파이썬)가 하지 않는 것
 
 - `pytest`는 openpyxl로 통합 워크북을 만들고 **수식·이름·구조**를 검증한다. **Microsoft Excel을 실행해 셀을 재계산하지 않는다.**

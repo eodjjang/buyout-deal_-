@@ -78,11 +78,16 @@ def build(wb: Workbook) -> Worksheet:
         dv_src.add(src_cell)
         c.apply_input(ws[src_cell])
         rel_cell = ws[f"Q{r}"]
-        rel_cell.value = f'=IFERROR(XLOOKUP(P{r},$A$51:$A$56,$B$51:$B$56),"")'
+        # INDEX/MATCH — Excel 2016+ 호환 (XLOOKUP은 구버전에서 #NAME?)
+        rel_cell.value = (
+            f'=IFERROR(INDEX($B$51:$B$56,MATCH(P{r},$A$51:$A$56,0)),"")'
+        )
         c.apply_calc(rel_cell)
         dv_rel.add(f"Q{r}")
         inc_cell = ws[f"R{r}"]
-        inc_cell.value = f'=IFERROR(XLOOKUP(P{r},$A$51:$A$56,$C$51:$C$56),FALSE)'
+        inc_cell.value = (
+            f'=IFERROR(INDEX($C$51:$C$56,MATCH(P{r},$A$51:$A$56,0)),FALSE)'
+        )
         c.apply_calc(inc_cell)
         c.apply_input(ws[f"S{r}"])
 

@@ -79,7 +79,7 @@ def test_9c_source_dropdown(wb):
 def test_9c_auto_reliability_lookup(wb):
     ws = wb[SHEET_9C]
     q3 = ws["Q3"].value
-    assert "XLOOKUP" in q3 or "VLOOKUP" in q3
+    assert "INDEX" in q3 and "MATCH" in q3
 
 
 def test_peer_summary_has_trading_and_transaction(wb):

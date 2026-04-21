@@ -15,7 +15,7 @@ def test_color_constants():
 
 
 def test_number_formats():
-    assert c.NUM_FMT_ACCOUNTING == '$#,##0;($#,##0);"-"'
+    assert c.NUM_FMT_ACCOUNTING == '#,##0;(#,##0);"-"'
     assert c.NUM_FMT_PERCENT == "0.0%"
     assert c.NUM_FMT_MULTIPLE == '0.0"x"'
     assert c.NUM_FMT_BPS == '0" bp"'

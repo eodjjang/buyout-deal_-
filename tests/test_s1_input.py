@@ -8,9 +8,8 @@ def test_section_a_labels(wb):
     expected = [
         "인수금액 (Purchase EV)",
         "Less: Net Debt Assumed",
-        "= 지분 인수가액 (Equity Purchase Price)",
-        "+ Transaction Fee (M&A 자문·실사·세무)",
-        "= Uses of Funds 합계",
+        "지분 인수가액 (Equity Purchase Price)",
+        "Uses of Funds 합계",
         "Sources: Opco Senior TL",
         "Sources: Opco 2nd Lien",
         "Sources: Holdco Sub Loan",
@@ -26,8 +25,8 @@ def test_section_a_labels(wb):
 def test_section_a_formulas(wb):
     ws = wb[SHEET_INPUT]
     assert ws["B7"].value == "=B5-B6"
-    assert ws["B9"].value == "=B7+B8"
-    assert ws["B13"].value == "=B9-B10-B11-B12"
+    assert ws["B8"].value == "=B7"
+    assert ws["B12"].value == "=B8-B9-B10-B11"
 
 
 def test_section_b_fy_axis(wb):
@@ -66,10 +65,10 @@ def test_dual_check_rows(wb):
 
 def test_check_formulas(wb):
     """Dual check row formulas — locks the Sources−Uses display formula and
-    the Target Leverage check (downstream T8 Debt Schedule reads B19)."""
+    the Target Leverage check."""
     ws = wb[SHEET_INPUT]
-    assert ws["B18"].value == "=(B10+B11+B12+B13)-B9"
-    assert ws["B19"].value == '=IFERROR((B10+B11+B12)/D27,"")'
+    assert ws["B18"].value == "=(B9+B10+B11+B12)-B8"
+    assert ws["B19"].value == '=IFERROR((B9+B10+B11)/D27,"")'
 
 
 def test_section_c_formula_shape(wb):
@@ -87,12 +86,12 @@ def test_named_ranges(wb):
     """Cross-sheet contract — Tasks 6-13 will reference these names."""
     expected = {
         "LTM_EBITDA": "'1_Input_BaseCase'!$D$27",
-        "Target_Leverage": "'1_Input_BaseCase'!$B$14",
-        "Closing_Date": "'1_Input_BaseCase'!$B$15",
-        "Exit_Date": "'1_Input_BaseCase'!$B$16",
-        "Opco_Senior_Principal": "'1_Input_BaseCase'!$B$10",
-        "Opco_2L_Principal": "'1_Input_BaseCase'!$B$11",
-        "Holdco_Sub_Principal": "'1_Input_BaseCase'!$B$12",
+        "Target_Leverage": "'1_Input_BaseCase'!$B$13",
+        "Closing_Date": "'1_Input_BaseCase'!$B$14",
+        "Exit_Date": "'1_Input_BaseCase'!$B$15",
+        "Opco_Senior_Principal": "'1_Input_BaseCase'!$B$9",
+        "Opco_2L_Principal": "'1_Input_BaseCase'!$B$10",
+        "Holdco_Sub_Principal": "'1_Input_BaseCase'!$B$11",
     }
     for name, attr in expected.items():
         assert name in wb.defined_names, f"missing named range: {name}"

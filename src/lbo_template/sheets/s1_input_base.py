@@ -12,16 +12,17 @@ from lbo_template import conventions as c
 _SECTION_TITLE_FONT = Font(name="Calibri", bold=True, size=11)
 _RED_FILL = PatternFill("solid", fgColor="FFC7CE")
 
+# Column A labels must NOT start with "=" (Excel treats as formula → #NAME?).
+# Transaction Fee row omitted — Uses = Equity Purchase (B7) only.
 SECTION_A_ROWS = [
     ("인수금액 (Purchase EV)", None, True),
     ("Less: Net Debt Assumed", None, True),
-    ("= 지분 인수가액 (Equity Purchase Price)", "=B5-B6", False),
-    ("+ Transaction Fee (M&A 자문·실사·세무)", None, True),
-    ("= Uses of Funds 합계", "=B7+B8", False),
+    ("지분 인수가액 (Equity Purchase Price)", "=B5-B6", False),
+    ("Uses of Funds 합계", "=B7", False),
     ("Sources: Opco Senior TL", None, True),
     ("Sources: Opco 2nd Lien", None, True),
     ("Sources: Holdco Sub Loan", None, True),
-    ("Sources: Sponsor Equity (plug)", "=B9-B10-B11-B12", False),
+    ("Sources: Sponsor Equity (plug)", "=B8-B9-B10-B11", False),
     ("Target Net Debt / LTM EBITDA (본부 승인치)", None, True),
     ("Closing Date", None, True),
     ("Exit Date (Assumed)", None, True),
@@ -77,9 +78,9 @@ def build(wb: Workbook) -> Worksheet:
         else:
             cell.number_format = c.NUM_FMT_ACCOUNTING
 
-    # Check rows (dual-check per v0.4 design)
+    # Check rows (dual-check per v0.4 design) — still rows 18–19
     ws.cell(row=18, column=1, value="Check: Sources − Uses (표시용, =0이어야 함)")
-    chk1 = ws.cell(row=18, column=2, value="=(B10+B11+B12+B13)-B9")
+    chk1 = ws.cell(row=18, column=2, value="=(B9+B10+B11+B12)-B8")
     chk1.number_format = c.NUM_FMT_ACCOUNTING
     c.apply_calc(chk1)
 
@@ -88,7 +89,7 @@ def build(wb: Workbook) -> Worksheet:
         column=1,
         value="Target Leverage Check ((Senior+2nd+Holdco)/LTM EBITDA ≤ Target)",
     )
-    chk2 = ws.cell(row=19, column=2, value="=IFERROR((B10+B11+B12)/D27,\"\")")
+    chk2 = ws.cell(row=19, column=2, value="=IFERROR((B9+B10+B11)/D27,\"\")")
     chk2.number_format = c.NUM_FMT_MULTIPLE
     c.apply_calc(chk2)
 
@@ -141,16 +142,16 @@ def build(wb: Workbook) -> Worksheet:
     # Named ranges for downstream sheets. SHEET_INPUT starts with a digit,
     # so single-quoting the sheet name in attr_text is mandatory.
     c.define_name(wb, "LTM_EBITDA", f"'{SHEET_INPUT}'!$D$27")
-    c.define_name(wb, "Target_Leverage", f"'{SHEET_INPUT}'!$B$14")
-    c.define_name(wb, "Closing_Date", f"'{SHEET_INPUT}'!$B$15")
-    c.define_name(wb, "Exit_Date", f"'{SHEET_INPUT}'!$B$16")
-    c.define_name(wb, "Opco_Senior_Principal", f"'{SHEET_INPUT}'!$B$10")
-    c.define_name(wb, "Opco_2L_Principal", f"'{SHEET_INPUT}'!$B$11")
-    c.define_name(wb, "Holdco_Sub_Principal", f"'{SHEET_INPUT}'!$B$12")
+    c.define_name(wb, "Target_Leverage", f"'{SHEET_INPUT}'!$B$13")
+    c.define_name(wb, "Closing_Date", f"'{SHEET_INPUT}'!$B$14")
+    c.define_name(wb, "Exit_Date", f"'{SHEET_INPUT}'!$B$15")
+    c.define_name(wb, "Opco_Senior_Principal", f"'{SHEET_INPUT}'!$B$9")
+    c.define_name(wb, "Opco_2L_Principal", f"'{SHEET_INPUT}'!$B$10")
+    c.define_name(wb, "Holdco_Sub_Principal", f"'{SHEET_INPUT}'!$B$11")
 
     # Flag Target Leverage Check red when principal stack exceeds Target multiple
     ws.conditional_formatting.add(
         "B19",
-        CellIsRule(operator="greaterThan", formula=["B14"], fill=_RED_FILL),
+        CellIsRule(operator="greaterThan", formula=["B13"], fill=_RED_FILL),
     )
     return ws
