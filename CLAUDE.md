@@ -1,6 +1,6 @@
 # Git worktrees (this repo)
 
-**Skill:** `using-git-worktrees` — implementation uses a **linked worktree** at a fixed sibling path (not `.worktrees/` under this clone).
+**Skill:** `using-git-worktrees` — Cursor 전용 문서는 `.cursor/skills/using-git-worktrees/SKILL.md` (저장소 버전). 구현은 아래 **linked worktree**에 두며, 프로젝트 루트의 `.worktrees\`는 사용하지 않는다.
 
 ## Directory preference
 
