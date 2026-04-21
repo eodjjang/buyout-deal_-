@@ -44,6 +44,20 @@ def test_9a_ciq_primary_formula_row3(wb):
     assert "CIQ" in e3 and "IQ_MARKETCAP" in e3 and "$B3" in e3
 
 
+def test_9a_ltm_uses_iq_ltm_constant(wb):
+    """기간 인수는 문자열 \"LTM\"이 아니라 플러그인 상수 IQ_LTM."""
+    ws = wb[SHEET_9A]
+    g3 = ws["G3"].value
+    assert "IQ_LTM" in g3 and '"LTM"' not in g3
+
+
+def test_9b_row_links_ciq_to_transaction_id(wb):
+    """A열 IQTR + CIQ(..., IQ_TR_*) — D3 타깃명."""
+    ws = wb[SHEET_9B]
+    assert "IQ_TR_TARGETNAME" in (ws["D3"].value or "")
+    assert "$A3" in (ws["D3"].value or "")
+
+
 def test_9b_max_500_rows_warning(wb):
     ws = wb[SHEET_9B]
     c1 = ws["C1"].value

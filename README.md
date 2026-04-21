@@ -50,3 +50,5 @@ pytest -v
 
 - Design v0.5: `.cursor/design-docs/20260420-0400-lender-lbo-stress-template-design.md`
 - Plan: `.cursor/plans/20260420-lender-lbo-stress-template-plan.md`
+
+**Word/LLM 심사보고서 파이프라인**은 별도 Git 저장소에서 두고, 대시보드 추출용 **JSON 계약(스키마·Named Range 매핑)** 의 정본은 이 레포의 [`schemas/`](schemas/README.md)이다.

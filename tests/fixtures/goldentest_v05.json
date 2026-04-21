@@ -5,7 +5,7 @@
     "8_Dashboard!B3": "=Case_Switch",
     "8_Dashboard!B4": "v0.5",
     "8_Dashboard!B8": "=DASH_Valuation_Method1_Label",
-    "8_Dashboard!B15": "=INDEX(Dividend_Row,1)",
+    "8_Dashboard!C15": "=INDEX(Dividend_Row,2)",
     "6_DCF_Valuation!J11": 5.0,
     "6_DCF_Valuation!J15": "=J14/(1+I10)^J11",
     "6_DCF_Valuation!J14": "=I9*(1+Perm_Growth)/(I10-Perm_Growth)",

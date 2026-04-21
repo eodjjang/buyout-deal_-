@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0",
+  "scenario": {
+    "case": "Base",
+    "template_version": "v0.5"
+  },
+  "valuation_methods": [
+    {
+      "method_index": 1,
+      "label": "Trading EV/EBITDA",
+      "multiple": 8.5,
+      "ev": 120000,
+      "opco_ltv": 0.42,
+      "cumulative_ltv": 0.51
+    },
+    {
+      "method_index": 2,
+      "label": "DCF (Stressed)",
+      "multiple": null,
+      "ev": 115000,
+      "opco_ltv": 0.4,
+      "cumulative_ltv": 0.49
+    },
+    {
+      "method_index": 3,
+      "label": "Transaction EV/EBITDA",
+      "multiple": 9.0,
+      "ev": 118000,
+      "opco_ltv": 0.41,
+      "cumulative_ltv": 0.5
+    }
+  ],
+  "coverage": {
+    "dividend_received_by_fy": [100, 120, 130, 140, 150],
+    "icr_holdco_min": 1.8,
+    "icr_opco_min": 2.1,
+    "dscr_opco_min": 1.2,
+    "net_leverage_by_fy": [5.2, 4.9, 4.6, 4.3, 4.0]
+  },
+  "cashflow_summary_table": [
+    {
+      "row_index": 1,
+      "label": "기초현금(a)",
+      "fy1": 0,
+      "fy2": 500,
+      "fy3": 600,
+      "fy4": 700,
+      "fy5": 800
+    },
+    {
+      "row_index": 2,
+      "label": "  EBITDA",
+      "fy1": 10000,
+      "fy2": 10500,
+      "fy3": 11000,
+      "fy4": 11500,
+      "fy5": 12000
+    },
+    {
+      "row_index": 3,
+      "label": "  CAPEX",
+      "fy1": -2000,
+      "fy2": -2100,
+      "fy3": -2200,
+      "fy4": -2300,
+      "fy5": -2400
+    },
+    {
+      "row_index": 4,
+      "label": "(+)배당수익(d)",
+      "fy1": 100,
+      "fy2": 120,
+      "fy3": 130,
+      "fy4": 140,
+      "fy5": 150
+    },
+    {
+      "row_index": 5,
+      "label": "(-) 기존 차입금 원리금 상환",
+      "fy1": -3000,
+      "fy2": -2800,
+      "fy3": -2600,
+      "fy4": -2400,
+      "fy5": -2200
+    },
+    {
+      "row_index": 6,
+      "label": "(-) 인수금융 이자비용",
+      "fy1": -800,
+      "fy2": -750,
+      "fy3": -700,
+      "fy4": -650,
+      "fy5": -600
+    },
+    {
+      "row_index": 7,
+      "label": "(-) 본건 Tr 원금 합계 (Tr.A+B+C)",
+      "fy1": -1500,
+      "fy2": -1500,
+      "fy3": -1500,
+      "fy4": -1500,
+      "fy5": -1500
+    },
+    {
+      "row_index": 8,
+      "label": "기말현금",
+      "fy1": 500,
+      "fy2": 600,
+      "fy3": 700,
+      "fy4": 800,
+      "fy5": 900
+    }
+  ],
+  "sponsor_irr": null
+}

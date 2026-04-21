@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local/lbo-stress-template/schemas/lbo_dashboard_export_v1.schema.json",
+  "title": "LBO Stress Template — 8_Dashboard export (v1)",
+  "description": "Consumed by the separate Word/LLM pipeline. Source: Named Ranges DASH_* on sheet 8_Dashboard (LBO_Stress_Template v0.5+). Amounts: KRW millions unless noted. Ratios stored as decimals (e.g. 0.45 = 45%) where Excel uses percent format for LTV.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "scenario",
+    "valuation_methods",
+    "coverage",
+    "cashflow_summary_table"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case", "template_version"],
+      "properties": {
+        "case": {
+          "type": "string",
+          "description": "Maps from DASH_Case / Case_Switch (Base | Upside | Downside)."
+        },
+        "template_version": {
+          "type": "string",
+          "description": "Maps from DASH_Version (e.g. v0.5)."
+        }
+      }
+    },
+    "valuation_methods": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "method_index",
+          "label",
+          "multiple",
+          "ev",
+          "opco_ltv",
+          "cumulative_ltv"
+        ],
+        "properties": {
+          "method_index": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3
+          },
+          "label": {
+            "type": "string",
+            "description": "DASH_Valuation_Method{i}_Label"
+          },
+          "multiple": {
+            "type": ["number", "null"],
+            "description": "DASH_Valuation_Method{i}_Multiple"
+          },
+          "ev": {
+            "type": ["number", "null"],
+            "description": "DASH_Valuation_Method{i}_EV (KRW mn)"
+          },
+          "opco_ltv": {
+            "type": ["number", "null"],
+            "description": "DASH_LTV_Method{i}_Opco"
+          },
+          "cumulative_ltv": {
+            "type": ["number", "null"],
+            "description": "DASH_LTV_Method{i}_Cumulative"
+          }
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dividend_received_by_fy",
+        "icr_holdco_min",
+        "icr_opco_min",
+        "dscr_opco_min",
+        "net_leverage_by_fy"
+      ],
+      "properties": {
+        "dividend_received_by_fy": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "type": ["number", "null"]
+          },
+          "description": "DASH_Div_FY1..FY5 (KRW mn)"
+        },
+        "icr_holdco_min": {
+          "type": ["number", "null"],
+          "description": "DASH_ICR_Holdco_Min"
+        },
+        "icr_opco_min": {
+          "type": ["number", "null"],
+          "description": "DASH_ICR_Opco_Min"
+        },
+        "dscr_opco_min": {
+          "type": ["number", "null"],
+          "description": "DASH_DSCR_Min"
+        },
+        "net_leverage_by_fy": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "type": ["number", "null"]
+          },
+          "description": "DASH_Lev_NetLeverage_FY1..FY5"
+        }
+      }
+    },
+    "cashflow_summary_table": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "description": "DASH_CFTable_Row1..Row8 — summary rows tied to 차주 자금수지표 (기초→EBITDA→CAPEX→배당→기존원리금→본건이자→Tr원금합→기말).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["row_index", "label", "fy1", "fy2", "fy3", "fy4", "fy5"],
+        "properties": {
+          "row_index": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8
+          },
+          "label": {
+            "type": "string",
+            "description": "DASH_CFTable_Row{i}_Label"
+          },
+          "fy1": {
+            "type": ["number", "null"],
+            "description": "DASH_CFTable_Row{i}_FY1 (KRW mn)"
+          },
+          "fy2": {
+            "type": ["number", "null"]
+          },
+          "fy3": {
+            "type": ["number", "null"]
+          },
+          "fy4": {
+            "type": ["number", "null"]
+          },
+          "fy5": {
+            "type": ["number", "null"]
+          }
+        }
+      }
+    },
+    "sponsor_irr": {
+      "type": ["number", "null"],
+      "description": "DASH_IRR_Sponsor — placeholder in v0.5; may be null."
+    },
+    "flat_named_ranges": {
+      "type": "object",
+      "description": "Optional round-trip: all DASH_* keys as strings (Excel text) or numbers after evaluation. For debugging; not required for Word fill.",
+      "additionalProperties": true
+    }
+  }
+}

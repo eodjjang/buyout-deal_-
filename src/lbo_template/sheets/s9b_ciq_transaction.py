@@ -26,6 +26,31 @@ HEADERS = [
     "Deal Status",
 ]
 
+# A열 = CIQ 거래 ID(IQTR…). S&P 매뉴얼 예: =CIQ("IQTR…","IQ_TR_TARGETNAME").
+# 그 외 IQ_TR_* 는 Formula Builder → Transactions 폴더에서 항목명이 다를 수 있음(플러그인 버전).
+_TX_DATA_ITEMS: dict[str, str] = {
+    "B": "IQ_TR_ANNOUNCED_DATE",
+    "C": "IQ_TR_CLOSED_DATE",
+    "D": "IQ_TR_TARGETNAME",
+    "E": "IQ_TR_TARGET_COUNTRY",
+    "F": "IQ_TR_TARGET_INDUSTRY",
+    "G": "IQ_TR_BUYER",
+    "H": "IQ_TR_BUYER_TYPE",
+    "I": "IQ_TR_CURRENCY",
+    "J": "IQ_TR_IMPLIED_EV",
+    "K": "IQ_TR_LTM_REVENUE",
+    "L": "IQ_TR_LTM_EBITDA",
+    "M": "IQ_TR_IMPLIED_EV_TO_LTM_REV",
+    "N": "IQ_TR_IMPLIED_EV_TO_LTM_EBITDA",
+    "O": "IQ_TR_STATUS",
+}
+
+
+def _tx_cell(r: int, col_letter: str) -> str:
+    """Return Excel formula for transaction row r, column letter (B..O)."""
+    item = _TX_DATA_ITEMS[col_letter]
+    return f'=IF($A{r}="","",IFERROR(CIQ($A{r},"{item}"),""))'
+
 
 def build(wb: Workbook) -> Worksheet:
     ws = wb.create_sheet(SHEET_9B)
@@ -35,7 +60,7 @@ def build(wb: Workbook) -> Worksheet:
 
     ws["A1"] = "Mode"
     ws["A1"].font = Font(name="Calibri", bold=True)
-    ws["B1"] = '=IF(ISFORMULA(D3),"Plug-in","⚠ Paste Fallback — 마스터 재배포 필요")'
+    ws["B1"] = '=IF(AND(ISFORMULA(D3),$A3<>""),"Plug-in","⚠ Paste Fallback — 마스터 재배포 필요")'
     c.apply_calc(ws["B1"])
 
     ws["C1"] = (
@@ -50,16 +75,18 @@ def build(wb: Workbook) -> Worksheet:
         cell.font = c.column_header_font()
         cell.fill = c.column_header_fill()
 
-    for r in range(3, 6):
-        cell = ws[f"A{r}"]
-        cell.value = f'=IFERROR(CIQTRANSACTION("KR_TRANS_{r-2}","TR_ID"),"")'
-        c.apply_ciq(cell)
-
     for r in range(3, S9B_DATA_END_ROW + 1):
-        for col_idx in range(15):
-            col = chr(ord("A") + col_idx)
+        a_cell = ws[f"A{r}"]
+        c.apply_input(a_cell)
+        for col in "BCDEFGHIJKLMNO":
             cell = ws[f"{col}{r}"]
-            if r > 5:
-                c.apply_input(cell)
+            cell.value = _tx_cell(r, col)
+            c.apply_ciq(cell)
+        ws[f"B{r}"].number_format = c.NUM_FMT_DATE
+        ws[f"C{r}"].number_format = c.NUM_FMT_DATE
+        for col in "JKL":
+            ws[f"{col}{r}"].number_format = c.NUM_FMT_ACCOUNTING
+        for col in "MN":
+            ws[f"{col}{r}"].number_format = c.NUM_FMT_MULTIPLE
 
     return ws

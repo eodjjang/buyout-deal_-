@@ -19,7 +19,7 @@ def test_dcf_rows(wb):
         "EV (PV 합계)",
         "(+) 비영업자산",
         "(-) Net Debt (Closing)",
-        "= 담보기준 Equity Value",
+        "담보기준 Equity Value",
     ]
     for e in expected:
         assert e in labels, f"missing: {e}"

@@ -26,22 +26,23 @@ HEADERS = [
     "LTM Period End Date",
 ]
 
-# CIQ function string per column (relative to $B{r} = Ticker)
+# CIQ per column (B{r} = Ticker/식별자). 기간은 문자열 "LTM"이 아니라 플러그인 상수
+# IQ_LTM / IQ_NTM / IQ_FY ± n — S&P Capital IQ Excel Plug-in Manual.
 CIQ_FORMULAS = {
     "A": '=IFERROR(CIQ($B{r},"IQ_COMPANY_NAME"),"")',
     "C": '=IFERROR(CIQ($B{r},"IQ_COUNTRY_NAME"),"")',
     "D": '=IFERROR(CIQ($B{r},"IQ_TRADING_CURRENCY"),"")',
     "E": '=IFERROR(CIQ($B{r},"IQ_MARKETCAP"),"")',
     "F": '=IFERROR(CIQ($B{r},"IQ_TEV"),"")',
-    "G": '=IFERROR(CIQ($B{r},"IQ_TOTAL_REV","LTM"),"")',
-    "H": '=IFERROR(CIQ($B{r},"IQ_EBITDA","LTM"),"")',
-    "I": '=IFERROR(CIQ($B{r},"IQ_EBITDA_MARGIN","LTM"),"")',
-    "J": '=IFERROR(CIQ($B{r},"IQ_TEV_EBITDA","LTM"),"")',
-    "K": '=IFERROR(CIQ($B{r},"IQ_TEV_EBITDA","FY-1"),"")',
-    "L": '=IFERROR(CIQ($B{r},"IQ_TEV_EBITDA","FY-2"),"")',
-    "M": '=IFERROR(CIQ($B{r},"IQ_TEV_EBITDA","NTM"),"")',
-    "N": '=IFERROR(CIQ($B{r},"IQ_NET_DEBT_EBITDA","LTM"),"")',
-    "O": '=IFERROR(CIQ($B{r},"IQ_LTM_PERIOD_END_DATE"),"")',
+    "G": '=IFERROR(CIQ($B{r},"IQ_TOTAL_REV",IQ_LTM),"")',
+    "H": '=IFERROR(CIQ($B{r},"IQ_EBITDA",IQ_LTM),"")',
+    "I": '=IFERROR(CIQ($B{r},"IQ_EBITDA_MARGIN",IQ_LTM),"")',
+    "J": '=IFERROR(CIQ($B{r},"IQ_TEV_EBITDA",IQ_LTM),"")',
+    "K": '=IFERROR(CIQ($B{r},"IQ_TEV_EBITDA",IQ_FY - 1),"")',
+    "L": '=IFERROR(CIQ($B{r},"IQ_TEV_EBITDA",IQ_FY - 2),"")',
+    "M": '=IFERROR(CIQ($B{r},"IQ_TEV_EBITDA",IQ_NTM),"")',
+    "N": '=IFERROR(CIQ($B{r},"IQ_NET_DEBT_EBITDA",IQ_LTM),"")',
+    "O": '=IFERROR(CIQ($B{r},"IQ_PERIODDATE",IQ_LTM),"")',
 }
 
 

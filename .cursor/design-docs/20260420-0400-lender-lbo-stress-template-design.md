@@ -6,6 +6,8 @@ Status: APPROVED (v0.5 — Preconditions 1~3 해결·Alt-A 확정·HMM 심사보
 Mode: Startup (intrapreneurship, pre-product)
 
 Revision History:
+- v0.5.1 (2026-04-21) — **D5 Word v2+ LLM 범위 보정**: 사용자 선택 심사포인트는 “선택 항목만”이 아니라 **기본 분석·초안에 추가(additive)**. 타이포·숫자표기 불변 전제 명시.
+- v0.5.2 (2026-04-21) — **저장소 경계**: Word/LLM 파이프라인은 **별도 Git 저장소**; `8_Dashboard` → JSON 계약의 정본은 템플릿 레포 [`schemas/`](../../schemas/README.md)(스키마·`DASH_*` 매핑 표).
 - v0.1 (2026-04-20 ~01:00) — Initial design APPROVED
 - v0.2 (2026-04-20 ~02:30) — P2 premise 전면 개정: CapIQ Pro 웹 기반 **"Export-once, Cascade-everywhere"** 설계 반영. `9_Peer_Input`을 `9a_CIQ_Trading_Raw` / `9b_CIQ_Transaction_Raw` / `9c_Manual_Supplement` / `9_Peer_Summary` 4시트로 분리. Parsing Guardrails에 CapIQ-specific 6항목 추가. The Assignment에 "CapIQ Saved Screen 2종 사전 세팅" 단계 추가.
 - v0.3 (2026-04-20 ~04:00) — **(1) CapIQ Office Plug-in 권한 확인**: Plug-in 실제 설치·사용 가능함이 확인됨. P2 premise를 재개정해 `=CIQ()`/`=CAPIQ()` 수식 직접 조회 경로를 **primary**로, v0.2의 Export+Paste 모델은 **fallback**으로 격하. `9a`/`9b`를 "Plug-in 수식 zone (Paste-fallback 호환)"으로 재정의. **(2) 선택적 통합 P&Q 분석 로직 추가**: `1_Input_BaseCase`에 `[Optional] P`·`[Optional] Q` 행 신설, `2_Stress_Panel`에 `Price 변화율(%)` · `Volume 변화율(%)` 파라미터 2개 추가, `3_Operating_Overlay`의 Revenue 산출을 P·Q 입력 여부에 따라 분기하도록 설계. Parsing Guardrails에 P&Q 전용 가드레일(#17) 추가.
@@ -766,6 +768,10 @@ v1.1 이후 검토. MVP에서 의도적으로 제외.
 
 - **내용**: `8_Dashboard`의 Named Range를 읽어 Word 심사보고서 템플릿의 표 셀에 자동 삽입.
 - **전제**: Precondition 2 Word 양식 확정 + 3건 이상 실딜 검증.
+- **LLM 분석·초안 범위 (v2+ 보정, 2026-04-21)**:
+  - **기본**: Valuation·Exit 파트에 대해 **표준 심사 관점의 분석·초안**은 **항상** 생성한다(사용자가 심사포인트를 고르지 않아도 동일).
+  - **추가**: 사용자가 선택한 심사포인트(분석 항목)는 **나머지를 생략하는 필터가 아니다**. 기본 분석·초안에 **더해** 해당 항목을 심화·강조·별도 소절 등으로 **추가 분석·추가 초안**한다 (**additive**, exclusive 아님).
+  - **서식**: 표·단락 구조 편집은 D5 구현 단계에서 별도 규칙과 합치되나, 글꼴·크기·정렬·숫자 표기 등 **타이포·숫자 표시 규칙**은 표준 샘플에서 변경하지 않는다(회의 합의).
 
 ### D6. Cross-deal Peer DB (v2+)
 

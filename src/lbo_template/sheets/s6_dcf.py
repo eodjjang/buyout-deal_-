@@ -123,7 +123,8 @@ def build(wb: Workbook) -> Worksheet:
     e19.font = c.crosstab_link_font()
     e19.number_format = c.NUM_FMT_ACCOUNTING
 
-    ws.cell(row=20, column=1, value="= 담보기준 Equity Value")
+    # Column A must not start with "=" — Excel treats it as a formula (#NAME?).
+    ws.cell(row=20, column=1, value="담보기준 Equity Value")
     e20 = ws["E20"]
     e20.value = "=E17+E18-E19"
     c.apply_key_output(e20)
