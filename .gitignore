@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+dist/
+*.egg-info/
+.venv/
+venv/
+build/
+.mypy_cache/
+.ruff_cache/
+# 생성된 엑셀 산출물(바이너리)은 dist/ 외에는 커밋 금지
+/*.xlsx
+!examples/*.xlsx
